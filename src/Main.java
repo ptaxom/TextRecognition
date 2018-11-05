@@ -36,7 +36,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String name = "src7.png";
+        String name = "src9.png";
         BufferedImage image;
         try {
             image = ImageIO.read(new java.io.File("res\\"+name));
@@ -48,7 +48,7 @@ public class Main {
 //            image = new BoxBlur().Apply(image,1);
 //            image = new BoxBlur().Apply(image,1);
 
-            image = new ThresholdFilter().Apply(image,220);
+            image = new ThresholdFilter().Apply(image,128);
 
             ConnectionComponent connectionComponent = new ConnectionComponent(image);
 
