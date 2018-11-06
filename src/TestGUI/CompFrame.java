@@ -14,7 +14,7 @@ public class CompFrame extends JFrame {
     private CompPanel panel;
 
     public CompFrame(ConnectionComponent component) {
-        super("Test");
+        super("CompFrame");
         this.component = component;
 
         setSize(component.getImage().getWidth()+200, component.getImage().getHeight()+200);

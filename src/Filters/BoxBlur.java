@@ -65,17 +65,19 @@ public class BoxBlur extends AbstractFilter {
         for(int i = 0; i < image.getWidth(); i++)
             for(int j = 0; j < image.getHeight(); j++)
             {
-                double r = 0, g = 0, b = 0;
+                double r = 0, g = 0, b = 0, a = 0;
                 for(int x = -halfOfMatrixSize; x < halfOfMatrixSize; x++)
                     for(int y = -halfOfMatrixSize; y < halfOfMatrixSize; y++)
                     {
-                        int rgb = buffer.getRGB(i + halfOfMatrixSize + x, j + halfOfMatrixSize + y);
+//                        int rgb = buffer.getRGB(i + halfOfMatrixSize + x, j + halfOfMatrixSize + y);
+                        Color cl = new Color(buffer.getRGB(i + halfOfMatrixSize + x, j + halfOfMatrixSize + y));
                         double kern = kernel[halfOfMatrixSize+x][halfOfMatrixSize+y];
-                        r += getRed(rgb) * kern;
-                        g += getGreen(rgb) * kern;
-                        b += getBlue(rgb) * kern;
+                        a += cl.getAlpha() * kern;
+                        r += cl.getRed() * kern;
+                        g += cl.getGreen() * kern;
+                        b += cl.getBlue() * kern;
                     }
-                    out.setRGB(i,j,ColorToRGB(new Color(FixRGB(r), FixRGB(g), FixRGB(b))));
+                    out.setRGB(i,j,(new Color(FixRGB(r), FixRGB(g), FixRGB(b))).getRGB());
             }
 
         return out;

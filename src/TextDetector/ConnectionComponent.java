@@ -80,17 +80,17 @@ public class ConnectionComponent {
 
     private int maxComp = 0;
 
-    private Color getCompColor(int num){
+    public static Color getCompColor(int num, int max){
         Color cl = null;
         if (num == 0)
             return Color.WHITE;
-        if (maxComp < 4){
+        if (max < 4){
             if (num == 1) cl = Color.RED;
             if (num == 2) cl = Color.GREEN;
             if (num == 3) cl = Color.BLUE;
         }
         else {
-            double a = Math.exp(Math.log(maxComp)/3);
+            double a = Math.exp(Math.log(max)/3);
             int numberSystemBase = (int) Math.ceil(a);
             int r = 255 * (num % numberSystemBase) / numberSystemBase; num/=numberSystemBase;
             int g = 255 * (num % numberSystemBase) / numberSystemBase; num/=numberSystemBase;
@@ -105,7 +105,7 @@ public class ConnectionComponent {
         maxComp = getMaxComp();
         for(int i = 0; i < image.getWidth(); i++)
             for(int j = 0; j < image.getHeight(); j++)
-                out.setRGB(i,j,AbstractFilter.ColorToRGB(getCompColor(compArray[j][i])));
+                out.setRGB(i,j,AbstractFilter.ColorToRGB(getCompColor(compArray[j][i], maxComp)));
         return out;
     }
 
@@ -114,7 +114,7 @@ public class ConnectionComponent {
         return AbstractFilter.getBlue(rgb) == 0 && AbstractFilter.getGreen(rgb) == 0 && AbstractFilter.getRed(rgb) == 0;
     }
 
-    private boolean isBlack(int i, int j){
+    public boolean isBlack(int i, int j){
         if (i < 0 || j < 0 || i >= image.getHeight() || j >= image.getWidth())
             return false;
         return isBlack(image.getRGB(j,i));

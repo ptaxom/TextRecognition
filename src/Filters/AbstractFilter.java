@@ -1,7 +1,10 @@
 package Filters;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
 
 /**
  * Created by ptaxom on 05.11.2018.
@@ -42,6 +45,20 @@ public abstract class AbstractFilter {
 
     public static boolean isBlack(int rgb){
         return getBlue(rgb) == 0 && getGreen(rgb) == 0 && getRed(rgb) == 0;
+    }
+
+    public static BufferedImage rotate(BufferedImage src, double angle){
+        AffineTransform transform = new AffineTransform();
+        transform.rotate(angle,src.getWidth()/2, src.getHeight()/2);
+
+        BufferedImageOp operator = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+
+        BufferedImage dest = new BufferedImage(src.getWidth(), src.getHeight(), src.getType());
+
+        Graphics2D g2 = dest.createGraphics();
+        g2.drawImage(src,operator,0,0);
+
+        return dest;
     }
 
     abstract BufferedImage Apply(BufferedImage image, int param);

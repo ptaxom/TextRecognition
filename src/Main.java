@@ -4,6 +4,7 @@ import Filters.ThresholdFilter;
 import TestGUI.CompFrame;
 import TestGUI.TestFrame;
 import TextDetector.ConnectionComponent;
+import TextDetector.HoughTransform;
 import TextDetector.Literal;
 
 import javax.imageio.ImageIO;
@@ -36,35 +37,50 @@ public class Main {
 
     public static void main(String[] args) {
 
-        String name = "src9.png";
-        BufferedImage image;
+//        String name = "src4.png";
+        String name = "test3.jpg";
+        BufferedImage image, src;
         try {
             image = ImageIO.read(new java.io.File("res\\"+name));
+            src = ImageIO.read(new java.io.File("res\\"+name));
 
 //            Intereference(image, 10);
 
-            new TestFrame(image);
+//            new TestFrame(image);
 
 //            image = new BoxBlur().Apply(image,1);
 //            image = new BoxBlur().Apply(image,1);
 
-            image = new ThresholdFilter().Apply(image,128);
+//            new TestFrame(image);
+
+            image = new ThresholdFilter().Apply(image,135);
+
+            new TestFrame(image,0.8);
 
             ConnectionComponent connectionComponent = new ConnectionComponent(image);
 
-//            for(int i = 70; i < 80 && i < connectionComponent.getLiterals().size(); i++) {
-//                Literal l = connectionComponent.getLiterals().get(i);
-//                BufferedImage img = connectionComponent.getImage().getSubimage(l.getX(), l.getY(), l.getWidth(), l.getHeight());
-//                new TestFrame(img, 3);
-//            }
-
-            new TestFrame(connectionComponent.getColorizedImage());
-
             new CompFrame(connectionComponent);
+
+            int param = 250;
+
+            HoughTransform houghTransform = new HoughTransform(param,param,connectionComponent);
+
+
+            System.out.println(Math.toDegrees(Math.PI/2 - houghTransform.getTheta()));
+
+            BufferedImage rotated = AbstractFilter.rotate(image,Math.PI/2 - houghTransform.getTheta());
+
+            ConnectionComponent component2 = new ConnectionComponent(rotated);
+
+            new CompFrame(component2);
+
+            new TestFrame(rotated,0.7);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
     }
 
 }
