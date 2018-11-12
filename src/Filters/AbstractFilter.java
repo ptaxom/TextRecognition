@@ -139,6 +139,35 @@ public abstract class AbstractFilter {
 
 
 
+    public static BufferedImage getHistogram(BufferedImage img, int maxHeight){
+        int discreteStep = 256;
+        int max = 0;
+        int[] arr = new int[discreteStep];
+
+        BufferedImage out = new BufferedImage(discreteStep,maxHeight,img.getType());
+
+        for(int x = 0; x < out.getWidth(); x++)
+            for(int y = 0; y < out.getHeight(); y++)
+                out.setRGB(x,y,Color.WHITE.getRGB());
+
+        for(int x = 0; x < img.getWidth(); x++)
+            for(int y = 0; y < img.getHeight(); y++)
+            {
+                Color cl = new Color(img.getRGB(x,y));
+                int px = (int) ((double)(cl.getBlue() + cl.getGreen() + cl.getRed()) / 3.0 * (double)discreteStep / 256.0);
+                if (px > discreteStep)
+                    px = discreteStep - 1;
+                arr[px]++;
+                if (arr[px] > max)
+                    max = arr[px];
+            }
+
+        for(int i = 0; i < discreteStep; i++)
+            for(int j = 0; j < (double)arr[i] /(double) max * (double)maxHeight; j++)
+                out.setRGB(i,maxHeight - j - 1, Color.BLACK.getRGB());
+        return out;
+    }
+
     abstract BufferedImage Apply(BufferedImage image, int param);
 
 
