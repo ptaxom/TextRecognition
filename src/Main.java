@@ -36,10 +36,13 @@ public class Main {
 
     public static void main(String[] args) {
         try{
-            BufferedImage test = ImageIO.read(new java.io.File("res\\test1.jpg"));
+            BufferedImage test = ImageIO.read(new java.io.File("res\\src11.jpg"));
 //            BufferedImage i1 = new SSRFilter().Apply(test,3);
 
-            new TestFrame(AbstractFilter.getHistogram(test,300));
+            double sc = 0.9;
+            new TestFrame(AbstractFilter.grayScale(test),sc);
+            new TestFrame(AbstractFilter.grayScaleAVG(test),sc);
+
         } catch (IOException e) {
             e.printStackTrace();
         }

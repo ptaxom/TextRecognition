@@ -42,7 +42,7 @@ public class BoxBlur extends AbstractFilter {
         for(int i = 0; i < image.getWidth(); i++)
             for(int j = 0; j < image.getHeight(); j++)
             {
-                double r = 0, g = 0, b = 0;
+                int r = 0, g = 0, b = 0;
                 for(int x = -halfOfMatrixSize; x < halfOfMatrixSize; x++)
                     for(int y = -halfOfMatrixSize; y < halfOfMatrixSize; y++)
                     {

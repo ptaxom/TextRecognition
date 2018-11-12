@@ -28,7 +28,7 @@ public abstract class AbstractFilter {
     }
 
 
-    static BufferedImage deepCopy(BufferedImage bi) {
+    static public BufferedImage deepCopy(BufferedImage bi) {
         ColorModel cm = bi.getColorModel();
         boolean isAlphaPremultiplied = cm.isAlphaPremultiplied();
         WritableRaster raster = bi.copyData(null);
@@ -170,5 +170,30 @@ public abstract class AbstractFilter {
 
     abstract BufferedImage Apply(BufferedImage image, int param);
 
+
+    public static BufferedImage grayScaleAVG(BufferedImage img){
+        BufferedImage out = deepCopy(img);
+        for(int x = 0; x < out.getWidth(); x++)
+            for (int y = 0; y < out.getHeight(); y++){
+                Color cl = new Color(out.getRGB(x,y));
+                int val = (cl.getBlue() + cl.getRed() + cl.getGreen()) / 3;
+                out.setRGB(x,y, new Color(val, val, val).getRGB());
+            }
+        return out;
+    }
+
+
+    public static BufferedImage grayScale(BufferedImage img){
+        BufferedImage out = deepCopy(img);
+        for(int x = 0; x < out.getWidth(); x++)
+            for (int y = 0; y < out.getHeight(); y++){
+                Color cl = new Color(out.getRGB(x,y));
+                int val = (int) (0.2126 * (double)cl.getRed() +
+                                 0.7152 * (double)cl.getGreen() +
+                                 0.0722 * (double)cl.getBlue());
+                out.setRGB(x,y, new Color(val, val, val).getRGB());
+            }
+        return out;
+    }
 
 }
