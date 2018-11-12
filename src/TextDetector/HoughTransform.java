@@ -81,7 +81,7 @@ public class HoughTransform {
         BufferedImage out = new BufferedImage(rhonum, anglenum, BufferedImage.TYPE_INT_RGB);
         for(int i = 0; i < anglenum; i++)
             for(int j = 0; j < rhonum; j++) {
-                int color = (accum[i][j] / maxIntencivity) * 255;
+                int color = (int) ((float)accum[i][j] / (float)maxIntencivity * 255.0f);
                 if (color < 0) color = 0;
                 if (color > 255) color = 255;
                 out.setRGB(j, i, new Color(color, color, color).getRGB());
@@ -107,12 +107,12 @@ public class HoughTransform {
         List<Pair<Float, Float>> lines = new ArrayList<>();
 
 
-        int threshold = (int) (0.7 * maxIntencivity);
+        int threshold = (int) (0.8 * maxIntencivity);
 
 
         for(int i = 0; i < anglenum; i++)
             for(int j = 0; j < rhonum; j++)
-                if (accum[i][j] > threshold && contiction(i,j)
+                if (accum[i][j] > threshold && condiction(i,j)
                         ) {
                     float prop = (j - rhonum/2.0f) / (rhonum/2.0f) * -maxRho;
                     lines.add(new Pair<>((float) (Math.PI * i / anglenum), prop));
@@ -137,7 +137,7 @@ public class HoughTransform {
         }
     }
 
-    private boolean contiction(int i, int j){
+    private boolean condiction(int i, int j){
         boolean ans1 = false;
         boolean ans2 = false;
 

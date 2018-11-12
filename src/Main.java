@@ -1,5 +1,6 @@
 import Filters.AbstractFilter;
 import Filters.BoxBlur;
+import Filters.SSRFilter;
 import Filters.ThresholdFilter;
 import TestGUI.CompFrame;
 import TestGUI.TestFrame;
@@ -10,9 +11,7 @@ import TextDetector.Literal;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
-import java.awt.image.ImageFilter;
+import java.awt.image.*;
 import java.io.IOException;
 
 /**
@@ -36,13 +35,26 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        try{
+            BufferedImage test = ImageIO.read(new java.io.File("res\\test2.jpg"));
+            BufferedImage i1 = new SSRFilter().Apply(test,3);
+
+            new TestFrame(i1,0.4);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void test1(){
 
 //        String name = "src4.png";
-        String name = "test3.jpg";
+        String name = "test2.jpg";
         BufferedImage image, src;
         try {
             image = ImageIO.read(new java.io.File("res\\"+name));
             src = ImageIO.read(new java.io.File("res\\"+name));
+
+            new TestFrame(image,0.7);
 
 //            Intereference(image, 10);
 
@@ -53,7 +65,7 @@ public class Main {
 
 //            new TestFrame(image);
 
-            image = new ThresholdFilter().Apply(image,135);
+            image = new ThresholdFilter().Apply(image,200);
 
             new TestFrame(image,0.8);
 
@@ -61,7 +73,7 @@ public class Main {
 
             new CompFrame(connectionComponent);
 
-            int param = 250;
+            int param = 20;
 
             HoughTransform houghTransform = new HoughTransform(param,param,connectionComponent);
 
@@ -74,13 +86,11 @@ public class Main {
 
             new CompFrame(component2);
 
-            new TestFrame(rotated,0.7);
+            new TestFrame(houghTransform.getHoughSpace(),0.4);
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 }
