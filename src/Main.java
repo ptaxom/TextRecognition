@@ -1,7 +1,4 @@
-import Filters.AbstractFilter;
-import Filters.BoxBlur;
-import Filters.SSRFilter;
-import Filters.ThresholdFilter;
+import Filters.*;
 import TestGUI.CompFrame;
 import TestGUI.TestFrame;
 import TextDetector.ConnectionComponent;
@@ -36,11 +33,22 @@ public class Main {
 
     public static void main(String[] args) {
         try{
-            BufferedImage test = ImageIO.read(new java.io.File("res\\test2.jpg"));
-//            BufferedImage i1 = new SSRFilter().Apply(test,3);
-            test = AbstractFilter.grayScale(test);
-            test = AbstractFilter.adaptiveThreshold(test,7,-7);
-            new TestFrame(test,1);
+            BufferedImage test = ImageIO.read(new java.io.File("res\\ErosianTest.png"));
+
+            MorphologicalFilters mFilter = new MorphologicalFilters(0,3);
+
+            BoxBlur blur = new BoxBlur();
+
+            new TestFrame(test);
+            BufferedImage boxBlured = blur.BoxBlur(test,2);
+            BufferedImage myBlur = blur.Apply(test,2);
+            BufferedImage gaussBlured = blur.GaussBlur(test,2,1.5);
+            BufferedImage out = mFilter.Closing(gaussBlured);
+
+            new TestFrame(boxBlured);
+            new TestFrame(myBlur);
+            new TestFrame(gaussBlured);
+            new TestFrame(out);
 
         } catch (IOException e) {
             e.printStackTrace();

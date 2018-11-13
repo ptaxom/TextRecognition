@@ -31,12 +31,7 @@ public class BoxBlur extends AbstractFilter {
 
         BufferedImage out = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
 
-//        BufferedImage img = deepCopy(image);
-//
-//        Kernel kernel2 = new Kernel(3, 3, new float[] { 1f / 9f, 1f / 9f, 1f / 9f,
-//                1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f, 1f / 9f });
-//        BufferedImageOp op = new ConvolveOp(kernel2);
-//        img = op.filter(img, null);
+
 
 
         for(int i = 0; i < image.getWidth(); i++)
@@ -57,6 +52,47 @@ public class BoxBlur extends AbstractFilter {
             }
 
         return out;
+    }
+
+    public static BufferedImage BoxBlur(BufferedImage src, int size){
+        BufferedImage img = deepCopy(src);
+
+        float kernelSize = 2.0f * size + 1.0f;
+
+        float[] kern = new float[(int) (kernelSize*kernelSize)];
+        for(int i = 0; i < kernelSize * kernelSize; i++)
+            kern[i] = 1.0f / kernelSize;
+
+        Kernel kernel = new Kernel(size, size, kern);
+        BufferedImageOp op = new ConvolveOp(kernel);
+        img = op.filter(img, null);
+        return img;
+    }
+
+
+    public static BufferedImage GaussBlur(BufferedImage src, int size, double sigma){
+        BufferedImage img = deepCopy(src);
+
+        float kernelSize = 2.0f * size + 1.0f;
+        int kernelSizeInt = 2 * size + 1;
+
+        float[] kern = new float[kernelSizeInt * kernelSizeInt];
+
+        for(int i = 0; i < kernelSizeInt; i++) {
+            for (int j = 0; j < kernelSizeInt; j++) {
+                double dX = (double) (size - i);
+                double dY = (double) (size - j);
+                double dist = dX * dX + dY * dY;
+                kern[i * kernelSizeInt + j] = (float) Math.exp(-dist / sigma / sigma);
+                System.out.printf("%02f ", kern[i * kernelSizeInt + j]);
+            }
+            System.out.println();
+        }
+
+        Kernel kernel = new Kernel(size, size, kern);
+        BufferedImageOp op = new ConvolveOp(kernel);
+        img = op.filter(img, null);
+        return img;
     }
 
 }

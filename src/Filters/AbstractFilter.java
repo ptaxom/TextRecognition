@@ -198,7 +198,7 @@ public abstract class AbstractFilter {
     }
 
 
-    private static double getAvg(int rgb){
+    public static double getAvg(int rgb){
         Color cl = new Color(rgb);
         double avg = (double)cl.getBlue() + (double)cl.getRed() + (double)cl.getGreen();
         return avg/3;
