@@ -36,12 +36,11 @@ public class Main {
 
     public static void main(String[] args) {
         try{
-            BufferedImage test = ImageIO.read(new java.io.File("res\\src11.jpg"));
+            BufferedImage test = ImageIO.read(new java.io.File("res\\test2.jpg"));
 //            BufferedImage i1 = new SSRFilter().Apply(test,3);
-
-            double sc = 0.9;
-            new TestFrame(AbstractFilter.grayScale(test),sc);
-            new TestFrame(AbstractFilter.grayScaleAVG(test),sc);
+            test = AbstractFilter.grayScale(test);
+            test = AbstractFilter.adaptiveThreshold(test,7,-7);
+            new TestFrame(test,1);
 
         } catch (IOException e) {
             e.printStackTrace();

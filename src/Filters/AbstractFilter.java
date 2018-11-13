@@ -1,5 +1,6 @@
 package Filters;
 
+import TestGUI.TestFrame;
 import Util.Matrix;
 
 import java.awt.*;
@@ -195,5 +196,59 @@ public abstract class AbstractFilter {
             }
         return out;
     }
+
+
+    private static double getAvg(int rgb){
+        Color cl = new Color(rgb);
+        double avg = (double)cl.getBlue() + (double)cl.getRed() + (double)cl.getGreen();
+        return avg/3;
+    }
+
+
+    private static double getTileSum(double[][] tile, int x, int y, int tile_param){
+        int x1 = x - tile_param - 1, y1 = y - tile_param - 1;
+        int x2 = x + tile_param, y2 = y + tile_param;
+        double s1 = tile[x2][y2],
+               s2 = tile[x1 > 0 ? x1 : 0][y2],
+               s3 = tile[x1 > 0 ? x1 : 0][y1 > 0 ? y1 : 0],
+               s4 = tile[x2][y1 > 0 ? y1 : 0];
+        return s1 - s2 + s3 - s4;
+    }
+
+    public static BufferedImage adaptiveThreshold(BufferedImage img, int param, double k){
+        BufferedImage buffer = getImageContinuation(img, param);
+
+        double[][] scaleBuffer = new double[buffer.getWidth()][buffer.getHeight()]; //Sum of all pixels in rectangle (0;0) -> (x;y)
+
+        //Preprocces
+        scaleBuffer[0][0] = getAvg(buffer.getRGB(0,0));
+
+        for(int x = 1; x < buffer.getWidth(); x++)
+            scaleBuffer[x][0] = scaleBuffer[x-1][0] + getAvg(buffer.getRGB(x,0));
+
+        for(int y = 1; y < buffer.getHeight(); y++)
+            scaleBuffer[0][y] = scaleBuffer[0][y-1] + getAvg(buffer.getRGB(0,y));
+
+        for(int x = 1; x < buffer.getWidth(); x++)
+            for(int y = 1; y < buffer.getHeight(); y++)
+                scaleBuffer[x][y] = scaleBuffer[x-1][y] + scaleBuffer[x][y-1] - scaleBuffer[x-1][y-1] + getAvg(buffer.getRGB(x,y));
+
+
+        double kernel_size = 2.0 * param + 1.0;
+
+        BufferedImage out = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+
+        for(int x = 0; x < out.getWidth(); x++)
+            for(int y = 0; y < out.getHeight(); y++)
+            {
+                double mean = getTileSum(scaleBuffer,x + param,y + param,param) / kernel_size / kernel_size;
+                double T = mean + k ;
+                if (getAvg(buffer.getRGB(x + param,y + param)) > T)
+                     out.setRGB(x,y,Color.WHITE.getRGB());
+                else out.setRGB(x,y,Color.BLACK.getRGB());
+            }
+        return out;
+    }
+
 
 }
