@@ -3,7 +3,7 @@ package TextDetector;
 import Filters.AbstractFilter;
 import TestGUI.TestFrame;
 
-import java.awt.Color;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +19,7 @@ public class ConnectionComponent {
 
     private List<Literal> literals = new ArrayList<>();
 
+    private int pixelMassThreshold = 4;
 
     private BufferedImage image;
 
@@ -55,7 +56,9 @@ public class ConnectionComponent {
         LinkedBlockingDeque<Integer> vertexQueue = new LinkedBlockingDeque<>();
         Literal literal = new Literal(j1,i1);
         vertexQueue.add(i1*image.getWidth() + j1);
+        int mass = 0;
         while (!vertexQueue.isEmpty()){
+            ++mass;
             int vertexID = vertexQueue.getFirst();
             int i = vertexID / image.getWidth();
             int j = vertexID % image.getWidth();
@@ -73,8 +76,11 @@ public class ConnectionComponent {
                     }
 
         }
-        literal.setImage(getLiteralImage(literal,type));
-        literals.add(literal);
+        if (mass > pixelMassThreshold) {
+            literal.setMass(mass);
+            literal.setImage(getLiteralImage(literal, type));
+            literals.add(literal);
+        }
     }
 
 
@@ -114,7 +120,7 @@ public class ConnectionComponent {
         return AbstractFilter.getBlue(rgb) == 0 && AbstractFilter.getGreen(rgb) == 0 && AbstractFilter.getRed(rgb) == 0;
     }
 
-    public boolean isBlack(int i, int j){
+    private boolean isBlack(int i, int j){
         if (i < 0 || j < 0 || i >= image.getHeight() || j >= image.getWidth())
             return false;
         return isBlack(image.getRGB(j,i));
@@ -140,4 +146,25 @@ public class ConnectionComponent {
         return out;
     }
 
+    public BufferedImage getEqualHoughImage(){
+        BufferedImage out = new BufferedImage(image.getWidth(), image.getHeight(),BufferedImage.TYPE_INT_RGB);
+//        for(int x = 0; x < out.getWidth(); x++)
+//            for(int y = 0; y < out.getHeight(); y++)
+//                out.setRGB(x,y,Color.white.getRGB());
+        Graphics g = out.getGraphics();
+        g.setColor(Color.WHITE);
+        g.fillRect(0,0,out.getWidth(),out.getHeight());
+        for(Literal l : literals)
+            l.drawEqualLiteral(g);
+        return out;
+    }
+
+
+    public int getPixelMassThreshold() {
+        return pixelMassThreshold;
+    }
+
+    public void setPixelMassThreshold(int pixelMassThreshold) {
+        this.pixelMassThreshold = pixelMassThreshold;
+    }
 }

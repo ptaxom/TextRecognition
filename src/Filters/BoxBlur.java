@@ -84,9 +84,9 @@ public class BoxBlur extends AbstractFilter {
                 double dY = (double) (size - j);
                 double dist = dX * dX + dY * dY;
                 kern[i * kernelSizeInt + j] = (float) Math.exp(-dist / sigma / sigma);
-                System.out.printf("%02f ", kern[i * kernelSizeInt + j]);
+               // System.out.printf("%02f ", kern[i * kernelSizeInt + j]);
             }
-            System.out.println();
+//            System.out.println();
         }
 
         Kernel kernel = new Kernel(size, size, kern);

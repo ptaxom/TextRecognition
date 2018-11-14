@@ -12,19 +12,18 @@ import java.util.List;
  */
 public class HoughTransform {
 
+    private BufferedImage image;
     private int anglenum;
     private int rhonum;
 
     private int[][] accum;
 
-    private ConnectionComponent component;
-
     private BufferedImage houghSpace = null;
 
-    public HoughTransform(int anglenum, int rhonum, ConnectionComponent component) {
+    public HoughTransform(int anglenum, int rhonum, BufferedImage image) {
         this.anglenum = anglenum;
         this.rhonum = rhonum;
-        this.component = component;
+        this.image = image;
         accum = new int[anglenum][rhonum];
         fillAccum();
     }
@@ -49,13 +48,13 @@ public class HoughTransform {
             cosTable[i] = (float) Math.cos(angle);
         }
 
-        BufferedImage src = component.getImage();
+        BufferedImage src = image;
 
         maxRho = (float) Math.sqrt(src.getHeight()*src.getHeight()+src.getWidth()*src.getWidth());
 
         for(int i = 0; i < src.getHeight(); i++)    // y
             for(int j = 0; j < src.getWidth(); j++) // x
-                if (component.isBlack(i,j))
+                if (isBlack(i,j))
                     for(int k = 0; k < anglenum; k++){
                         float rho = i * sinTable[k] + j * cosTable[k];
                         rho = rhonum / 2 +  rho / maxRho * rhonum / 2;
@@ -99,10 +98,10 @@ public class HoughTransform {
     private BufferedImage imgWithLines;
 
     public void drawLines(){
-        BufferedImage out = new BufferedImage(component.getImage().getWidth(), component.getImage().getHeight(), component.getImage().getType());
+        BufferedImage out = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         for(int i = 0; i < out.getHeight(); i++)
             for(int j = 0; j < out.getWidth(); j++)
-                out.setRGB(j,i,component.getImage().getRGB(j,i));
+                out.setRGB(j,i,image.getRGB(j,i));
 
         List<Pair<Float, Float>> lines = new ArrayList<>();
 
@@ -166,4 +165,13 @@ public class HoughTransform {
     public BufferedImage getImgWithLines() {
         return imgWithLines;
     }
+
+    public boolean isBlack(int i, int j){
+        if (i < 0 || j < 0 || i >= image.getHeight() || j >= image.getWidth())
+            return false;
+        return ConnectionComponent.isBlack(image.getRGB(j,i));
+    }
+
+
+
 }

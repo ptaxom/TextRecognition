@@ -24,6 +24,8 @@ public class CompFrame extends JFrame {
         panel = new CompPanel(component);
         this.add(panel);
 
+//        panel.saveImg();
+
         setVisible(true);
     }
 
